@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anesthesia Book Library</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Enable dark mode using class
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        .book-cover {
+            aspect-ratio: 2 / 3;
+            object-fit: cover;
+        }
+        body.modal-open {
+            overflow: hidden;
+        }
+        .tab-active {
+            background-color: rgb(37 99 235);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 transition-colors">
+
+    <div class="min-h-screen container mx-auto p-4 sm:p-6">
+
+        <header class="mb-6 sm:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="text-center sm:text-left">
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100">
+                    Anesthesia Book Library
+                </h1>
+                <p class="text-gray-600 dark:text-gray-300 mt-1">
+                    Browse and open the anesthesia references you need
+                </p>
+            </div>
+
+            <div class="flex items-center justify-center sm:justify-end gap-3">
+                <button id="darkModeToggle"
+                        class="inline-flex items-center gap-2 rounded-full border border-gray-300 dark:border-gray-600 px-3 py-1 text-sm hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <span id="darkModeIcon">🌙</span>
+                    <span>Dark Mode</span>
+                </button>
+            </div>
+        </header>
+
+        <section class="mb-6 sm:mb-8 space-y-3">
+            <div class="flex flex-wrap gap-2">
+                <button class="category-tab tab-active px-3 py-1 rounded-full border border-blue-600 text-sm"
+                        data-category="all">
+                    All
+                </button>
+                <button class="category-tab px-3 py-1 rounded-full border border-gray-300 text-sm"
+                        data-category="basics">
+                    Basics of Anesthesia
+                </button>
+                <button class="category-tab px-3 py-1 rounded-full border border-gray-300 text-sm"
+                        data-category="major">
+                    Major Textbooks
+                </button>
+                <button class="category-tab px-3 py-1 rounded-full border border-gray-300 text-sm"
+                        data-category="new">
+                    New Books
+                </button>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                <span class="text-sm text-gray-600 dark:text-gray-300">
+                    Click any book to open it within the page (after adding links)
+                </span>
+                <div class="w-full sm:w-72">
+                    <label for="searchInput" class="sr-only">Search by book name</label>
+                    <input
+                        id="searchInput"
+                        type="text"
+                        placeholder="Search by book name..."
+                        class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                </div>
+            </div>
+        </section>
+
+        <main id="booksGrid"
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+
+            
+<div class="relative group">
+    <a href="#"
+       role="button"
+       class="book-link block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 overflow-hidden cursor-pointer"
+       data-pdf-link="https://drive.google.com/file/d/1-6ki5P24uvI_VC6s7n0YZIAjs0kFkV6P/preview"
+       data-title="Barash, Cullen, and Stoelting's Clinical Anesthesia (9th Ed.)"
+       data-category="major">
+        <div class="p-3 sm:p-4">
+            <img src="https://drive.google.com/thumbnail?id=1-fxhXAtaOtazkfIwMnDCe5Gh4y7Lmeg2&sz=w600"
+                 alt="Barash, Cullen, and Stoelting's Clinical Anesthesia (9th Ed.)"
+                 class="w-full rounded-md book-cover">
+        </div>
+        <div class="px-3 sm:px-4 pb-3 text-center">
+            <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-xs sm:text-sm group-hover:text-blue-600">
+                Barash, Cullen, and Stoelting's Clinical Anesthesia (9th Ed.)
+            </h3>
+        </div>
+    </a>
+    <a href="https://drive.google.com/file/d/1-6ki5P24uvI_VC6s7n0YZIAjs0kFkV6P/preview"
+       target="_blank"
+       title="Open in new tab"
+       class="absolute top-4 right-4 sm:top-5 sm:right-5 z-10 p-1.5 bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black/70">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+    </a>
+</div>
+
+
+<div class="relative group">
+    <a href="#"
+       role="button"
+       class="book-link block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 overflow-hidden cursor-pointer"
+       data-pdf-link="https://drive.google.com/file/d/1-DWCrmv_OBM-A5-lh4YvhEtuNeeNJTzd/preview"
+       data-title="Miller's Anesthesia 10E (2025)"
+       data-category="major">
+        <div class="p-3 sm:p-4">
+            <img src="https://drive.google.com/thumbnail?id=1-Zi3On_hh9avAfopoJtVAZ1yH1liiWDA&sz=w600"
+                 alt="Miller's Anesthesia 10E (2025)"
+                 class="w-full rounded-md book-cover">
+        </div>
+        <div class="px-3 sm:px-4 pb-3 text-center">
+            <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-xs sm:text-sm group-hover:text-blue-600">
+                Miller's Anesthesia 10E (2025)
+            </h3>
+        </div>
+    </a>
+    <a href="https://drive.google.com/file/d/1-DWCrmv_OBM-A5-lh4YvhEtuNeeNJTzd/preview"
+       target="_blank"
+       title="Open in new tab"
+       class="absolute top-4 right-4 sm:top-5 sm:right-5 z-10 p-1.5 bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black/70">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+    </a>
+</div>
+
+
+<div class="relative group">
+    <a href="#"
+       role="button"
+       class="book-link block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 overflow-hidden cursor-pointer"
+       data-pdf-link="https://drive.google.com/file/d/1-TQhBHr33-I4MAtT8vuHKR7fLfXlV-b3/preview"
+       data-title="Stoelting’s Anesthesia and Co-Existing Disease (8th Ed.)"
+       data-category="major">
+        <div class="p-3 sm:p-4">
+            <img src="https://drive.google.com/thumbnail?id=1-j5gVkDkzOanINFFQF-oS1OxI8i6JnzS&sz=w600"
+                 alt="Stoelting’s Anesthesia and Co-Existing Disease (8th Ed.)"
+                 class="w-full rounded-md book-cover">
+        </div>
+        <div class="px-3 sm:px-4 pb-3 text-center">
+            <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-xs sm:text-sm group-hover:text-blue-600">
+                Stoelting’s Anesthesia and Co-Existing Disease (8th Ed.)
+            </h3>
+        </div>
+    </a>
+    <a href="https://drive.google.com/file/d/1-TQhBHr33-I4MAtT8vuHKR7fLfXlV-b3/preview"
+       target="_blank"
+       title="Open in new tab"
+       class="absolute top-4 right-4 sm:top-5 sm:right-5 z-10 p-1.5 bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black/70">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+    </a>
+</div>
+
+
+<div class="relative group">
+    <a href="#"
+       role="button"
+       class="book-link block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 overflow-hidden cursor-pointer"
+       data-pdf-link="https://drive.google.com/file/d/1-TLPMn42yjVZ1q7-zmMshNbvYwZbjukB/preview"
+       data-title="Stoelting's Pharmacology & Physiology in Anesthetic Practice (6th Ed.)"
+       data-category="major">
+        <div class="p-3 sm:p-4">
+            <img src="https://drive.google.com/thumbnail?id=1-dJsZMNmt05wvlH1IOJzRNrsJmSkPk1g&sz=w600"
+                 alt="Stoelting's Pharmacology & Physiology in Anesthetic Practice (6th Ed.)"
+                 class="w-full rounded-md book-cover">
+        </div>
+        <div class="px-3 sm:px-4 pb-3 text-center">
+            <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-xs sm:text-sm group-hover:text-blue-600">
+                Stoelting's Pharmacology & Physiology in Anesthetic Practice (6th Ed.)
+            </h3>
+        </div>
+    </a>
+    <a href="https://drive.google.com/file/d/1-TLPMn42yjVZ1q7-zmMshNbvYwZbjukB/preview"
+       target="_blank"
+       title="Open in new tab"
+       class="absolute top-4 right-4 sm:top-5 sm:right-5 z-10 p-1.5 bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black/70">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+    </a>
+</div>
+
+
+<div class="relative group">
+    <a href="#"
+       role="button"
+       class="book-link block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 overflow-hidden cursor-pointer"
+       data-pdf-link="https://drive.google.com/file/d/1-T6_nlcSb5sRsLR3IriEFtQlX_p5Ed8C/preview"
+       data-title="Miller's BASICS OF ANESTHESIA (8th Ed., 2023)"
+       data-category="basics">
+        <div class="p-3 sm:p-4">
+            <img src="https://drive.google.com/thumbnail?id=1-iSzfszJ4zy9UkilR2dtPsmD8Wg43Jfh&sz=w600"
+                 alt="Miller's BASICS OF ANESTHESIA (8th Ed., 2023)"
+                 class="w-full rounded-md book-cover">
+        </div>
+        <div class="px-3 sm:px-4 pb-3 text-center">
+            <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-xs sm:text-sm group-hover:text-blue-600">
+                Miller's BASICS OF ANESTHESIA (8th Ed., 2023)
+            </h3>
+        </div>
+    </a>
+    <a href="https://drive.google.com/file/d/1-T6_nlcSb5sRsLR3IriEFtQlX_p5Ed8C/preview"
+       target="_blank"
+       title="Open in new tab"
+       class="absolute top-4 right-4 sm:top-5 sm:right-5 z-10 p-1.5 bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black/70">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+    </a>
+</div>
+
+
+<div class="relative group">
+    <a href="#"
+       role="button"
+       class="book-link block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 overflow-hidden cursor-pointer"
+       data-pdf-link="https://drive.google.com/file/d/1-DcK1eCJzK9Yq27cfHf8GgDXXeJplNXh/preview"
+       data-title="Miller's Anesthesia Review (2025)"
+       data-category="major">
+        <div class="p-3 sm:p-4">
+            <img src="https://drive.google.com/thumbnail?id=1-coD-Ij1XH2lE7hCbcb8H6T7xTYCzmTM&sz=w600"
+                 alt="Miller's Anesthesia Review (2025)"
+                 class="w-full rounded-md book-cover">
+        </div>
+        <div class="px-3 sm:px-4 pb-3 text-center">
+            <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-xs sm:text-sm group-hover:text-blue-600">
+                Miller's Anesthesia Review (2025)
+            </h3>
+        </div>
+    </a>
+    <a href="https://drive.google.com/file/d/1-DcK1eCJzK9Yq27cfHf8GgDXXeJplNXh/preview"
+       target="_blank"
+       title="Open in new tab"
+       class="absolute top-4 right-4 sm:top-5 sm:right-5 z-10 p-1.5 bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black/70">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+    </a>
+</div>
+
+
+</main>
+
+        <footer class="text-center mt-10 py-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+            &copy; 2025 Anesthesia Book Library
+        </footer>
+    </div>
+
+    <div id="pdf-modal"
+         class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center p-4">
+        <button id="close-modal"
+                class="absolute top-4 right-4 text-white text-4xl font-bold cursor-pointer z-50"
+                aria-label="Close Reader">
+            &times;
+        </button>
+
+        <div class="w-full h-full max-w-6xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-2xl flex flex-col">
+            <div class="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <div class="flex-1 min-w-0">
+                    <h2 id="modalTitle" class="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-100 truncate">
+                        Book Title
+                    </h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a id="openNewTabBtn"
+                       href="#"
+                       target="_blank"
+                       class="text-xs sm:text-sm px-2 py-1 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/40">
+                        Open in New Tab
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex-1">
+                <iframe id="pdf-iframe"
+                        src="about:blank"
+                        class="w-full h-full border-0"
+                        title="PDF Viewer"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('pdf-modal
