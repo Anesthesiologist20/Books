@@ -13,16 +13,20 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
-                    },
-                },
-            },
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"']
+                    }
+                }
+            }
         }
     </script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
     <style>
         body {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: 'Inter', sans-serif;
         }
         .book-cover {
             aspect-ratio: 2 / 3;
@@ -31,117 +35,108 @@
         body.modal-open {
             overflow: hidden;
         }
+        /* Tab active state */
         .tab-active {
-            background-color: rgb(37 99 235); /* blue-600 */
+            background-color: rgb(37 99 235 / var(--tw-bg-opacity));
             color: white;
-            border-color: rgb(37 99 235);
+            border-color: rgb(37 99 235 / var(--tw-border-opacity));
         }
-        .tab-inactive {
-            color: rgb(107 114 128); /* gray-500 */
-            border-color: rgb(209 213 219); /* gray-300 */
+        [data-category].tab-active {
+            --tw-bg-opacity: 1;
+            --tw-border-opacity: 1;
         }
-        .tab-inactive:hover {
-             background-color: rgb(243 244 246); /* gray-100 */
+        .dark .tab-active {
+            background-color: rgb(59 130 246 / var(--tw-bg-opacity));
+            border-color: rgb(59 130 246 / var(--tw-border-opacity));
         }
-        .dark .tab-inactive {
-            color: rgb(156 163 175); /* gray-400 */
-            border-color: rgb(55 65 81); /* gray-700 */
-        }
-        .dark .tab-inactive:hover {
-             background-color: rgb(31 41 55); /* gray-800 */
+        .dark [data-category].tab-active {
+             --tw-bg-opacity: 1;
+             --tw-border-opacity: 1;
         }
         
-        /* Hide scrollbar for search input */
-        #searchInput::-webkit-search-cancel-button {
-            -webkit-appearance: none;
-            appearance: none;
+        /* Hide scrollbar for modal iframe */
+        #pdf-iframe::-webkit-scrollbar {
+            display: none;
+        }
+        #pdf-iframe {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200">
+<body class="bg-gray-100 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
 
-    <div class="min-h-screen container mx-auto p-4 sm:p-6">
+    <div class="min-h-screen container mx-auto p-4 sm:p-6 lg:p-8">
 
+        <!-- Header -->
         <header class="mb-6 sm:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div class="text-center sm:text-left">
                 <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100">
                     Anesthesia Book Library
                 </h1>
-                <p class="text-gray-600 dark:text-gray-300 mt-1">
-                    Browse and open the anesthesia references you need
+                <p class="text-gray-600 dark:text-gray-300 mt-1 text-base">
+                    Browse and open the anesthesia references you need.
                 </p>
             </div>
 
             <!-- Dark Mode Toggle -->
             <div class="flex items-center justify-center sm:justify-end gap-3">
                 <button id="darkModeToggle"
-                        type="button"
-                        title="Toggle dark mode"
-                        class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <!-- Sun Icon (hidden in dark mode) -->
-                    <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12H.75m.386-6.364l1.591 1.591M12 12a4.5 4.5 0 00-4.5 4.5v.75A.75.75 0 017.5 18h9a.75.75 0 01.75-.75v-.75A4.5 4.5 0 0012 12z" />
-                    </svg>
-                    <!-- Moon Icon (hidden in light mode) -->
-                    <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 hidden">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                    </svg>
+                        class="inline-flex items-center gap-2 rounded-full border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 transition-all">
+                    <span id="darkModeIcon" class="w-5 h-5"></span>
+                    <span id="darkModeText">Toggle Mode</span>
                 </button>
             </div>
         </header>
 
-        <!-- Filters and Search Section -->
+        <!-- Filters and Search -->
         <section class="mb-6 sm:mb-8 space-y-4">
-            <div class="flex flex-wrap gap-2">
-                <button class="category-tab tab-active px-3 py-1 rounded-full border text-sm transition-colors"
+            <!-- Category Tabs -->
+            <div id="categoryTabs" class="flex flex-wrap gap-2">
+                <button class="category-tab tab-active px-3 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                         data-category="all">
                     All
                 </button>
-                <button class="category-tab tab-inactive px-3 py-1 rounded-full border text-sm transition-colors"
+                <button class="category-tab px-3 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                         data-category="basics">
                     Basics of Anesthesia
                 </button>
-                <button class="category-tab tab-inactive px-3 py-1 rounded-full border text-sm transition-colors"
+                <button class="category-tab px-3 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                         data-category="major">
                     Major Textbooks
                 </button>
-                <button class="category-tab tab-inactive px-3 py-1 rounded-full border text-sm transition-colors"
+                <button class="category-tab px-3 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                         data-category="new">
                     New Books
                 </button>
             </div>
 
+            <!-- Search Bar -->
             <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
-                <span class="text-sm text-gray-600 dark:text-gray-300">
-                    Click any book to open it in the reader.
+                <span id="bookCount" class="text-sm text-gray-600 dark:text-gray-300">
+                    <!-- Count will be inserted here -->
                 </span>
-                <!-- Search Input -->
                 <div class="relative w-full sm:w-72">
                     <label for="searchInput" class="sr-only">Search by book name</label>
                     <input
                         id="searchInput"
-                        type="search"
+                        type="text"
                         placeholder="Search by book name..."
-                        class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                     >
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                         </svg>
                     </div>
-                    <button id="clearSearchBtn" type="button" class="absolute inset-y-0 right-0 items-center pr-3 hidden" aria-label="Clear search">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
                 </div>
             </div>
         </section>
 
         <!-- Books Grid -->
         <main id="booksGrid"
-              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
-            
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
+
             <!-- Book Card 1 -->
             <div class="book-item relative group" data-category="major">
                 <a href="#"
@@ -328,7 +323,7 @@
                 </a>
             </div>
 
-            <!-- Book Card 7 (NEW) -->
+            <!-- Book Card 7 -->
             <div class="book-item relative group" data-category="basics">
                 <a href="#"
                    role="button"
@@ -358,49 +353,78 @@
                     </svg>
                 </a>
             </div>
+            
+            <!-- Book Card 8 -->
+            <div class="book-item relative group" data-category="major">
+                <a href="#"
+                   role="button"
+                   class="book-link block bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden cursor-pointer"
+                   data-pdf-link="https://drive.google.com/file/d/1PX3b9o7wAI2ReAc6xJxY16Beao7BgJVH/preview"
+                   data-title="Smith and Aitkenhead’s Textbook of Anaesthesia">
+                    <div class="p-3 sm:p-4">
+                        <img src="https://drive.google.com/thumbnail?id=1GIc5YtEZHBn5mzYmLs0Kx8uWCD8RT7Bc&sz=w600"
+                             alt="Smith and Aitkenhead’s Textbook of Anaesthesia"
+                             class="w-full rounded-md book-cover bg-gray-200"
+                             loading="lazy"
+                             onerror="this.onerror=null;this.src='https.placehold.co/600x900/e0e0e0/757575?text=No+Cover';">
+                    </div>
+                    <div class="px-3 sm:px-4 pb-3 text-center">
+                        <h3 class="font-semibold text-gray-800 dark:text-gray-100 text-xs sm:text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                            Smith and Aitkenhead’s Textbook of Anaesthesia
+                        </h3>
+                    </div>
+                </a>
+                <a href="https://drive.google.com/file/d/1PX3b9o7wAI2ReAc6xJxY16Beao7BgJVH/preview"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   title="Open in new tab"
+                   class="absolute top-4 right-4 sm:top-5 sm:right-5 z-10 p-1.5 bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-black/70">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                    </svg>
+                </a>
+            </div>
 
         </main>
         
         <!-- No Results Message -->
         <div id="noResults" class="hidden text-center text-gray-500 dark:text-gray-400 py-10">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 mx-auto mb-2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-            </svg>
-            <h3 class="text-lg font-semibold">No books found</h3>
-            <p class="text-sm">Try adjusting your search or filter.</p>
+            <p class="text-lg">No books found matching your search.</p>
         </div>
 
-
-        <footer class="text-center mt-10 py-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+        <!-- Footer -->
+        <footer class="text-center mt-10 sm:mt-16 py-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
             &copy; 2025 Anesthesia Book Library
         </footer>
     </div>
 
-    <!-- PDF Viewer Modal -->
+    <!-- PDF Modal -->
     <div id="pdf-modal"
-         class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center p-0 sm:p-4 transition-opacity duration-300"
-         role="dialog"
-         aria-modal="true"
-         aria-labelledby="modalTitle">
-         
-        <div class="w-full h-full sm:max-w-6xl sm:max-h-[95vh] bg-white dark:bg-gray-900 rounded-none sm:rounded-lg overflow-hidden shadow-2xl flex flex-col">
+         class="hidden fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center p-0 sm:p-4 transition-opacity duration-300">
+        
+        <div class="w-full h-full sm:max-w-6xl sm:max-h-[90vh] bg-white dark:bg-gray-900 sm:rounded-lg overflow-hidden shadow-2xl flex flex-col transition-all duration-300">
+            
             <!-- Modal Header -->
-            <div class="flex items-center justify-between px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
                 <div class="flex-1 min-w-0">
                     <h2 id="modalTitle" class="text-sm sm:text-base font-semibold text-gray-800 dark:text-gray-100 truncate">
                         Book Title
                     </h2>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-3">
                     <a id="openNewTabBtn"
                        href="#"
                        target="_blank"
                        rel="noopener noreferrer"
-                       class="text-xs sm:text-sm px-2 py-1 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-colors">
-                        Open in New Tab
+                       class="inline-flex items-center gap-1 text-xs sm:text-sm px-2 py-1 rounded-md border border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/40 transition-colors"
+                       title="Open in new tab">
+                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                       </svg>
+                        <span class="hidden sm:inline">New Tab</span>
                     </a>
                     <button id="close-modal"
-                        class="p-1 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full"
+                        class="p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                         aria-label="Close Reader">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -409,179 +433,176 @@
                 </div>
             </div>
 
-            <!-- Modal Body (Iframe) -->
+            <!-- Modal Body (iFrame) -->
             <div class="flex-1 bg-gray-200 dark:bg-gray-700">
                 <iframe id="pdf-iframe"
                         src="about:blank"
                         class="w-full h-full border-0"
                         title="PDF Viewer"
-                        frameborder="0"></iframe>
+                        sandbox="allow-scripts allow-same-origin allow-popups allow-forms">
+                </iframe>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const html = document.documentElement;
-            const darkModeToggle = document.getElementById('darkModeToggle');
-            const sunIcon = document.getElementById('sunIcon');
-            const moonIcon = document.getElementById('moonIcon');
-
-            const searchInput = document.getElementById('searchInput');
-            const clearSearchBtn = document.getElementById('clearSearchBtn');
-            const categoryTabs = document.querySelectorAll('.category-tab');
-            const booksGrid = document.getElementById('booksGrid');
-            const allBooks = Array.from(booksGrid.querySelectorAll('.book-item'));
-            const noResults = document.getElementById('noResults');
-            
             const modal = document.getElementById('pdf-modal');
             const closeModalBtn = document.getElementById('close-modal');
-            const pdfIframe = document.getElementById('pdf-iframe');
             const modalTitle = document.getElementById('modalTitle');
+            const pdfIframe = document.getElementById('pdf-iframe');
             const openNewTabBtn = document.getElementById('openNewTabBtn');
-            const bookLinks = document.querySelectorAll('.book-link');
+            const booksGrid = document.getElementById('booksGrid');
+            const allBookItems = Array.from(booksGrid.getElementsByClassName('book-item'));
+            const searchInput = document.getElementById('searchInput');
+            const categoryTabs = document.getElementById('categoryTabs');
+            const allCategoryTabs = Array.from(categoryTabs.getElementsByClassName('category-tab'));
+            const bookCountEl = document.getElementById('bookCount');
+            const noResultsEl = document.getElementById('noResults');
 
-            let currentCategory = 'all';
-
-            // --- Dark Mode ---
-            function setDarkTheme(isDark) {
-                if (isDark) {
-                    html.classList.add('dark');
-                    sunIcon.classList.add('hidden');
-                    moonIcon.classList.remove('hidden');
-                    localStorage.theme = 'dark';
-                } else {
-                    html.classList.remove('dark');
-                    sunIcon.classList.remove('hidden');
-                    moonIcon.classList.add('hidden');
-                    localStorage.theme = 'light';
-                }
-            }
-
-            // Set initial theme
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            setDarkTheme(localStorage.theme === 'dark' || (!('theme' in localStorage) && prefersDark));
-
-            // Toggle listener
-            darkModeToggle.addEventListener('click', () => {
-                setDarkTheme(!html.classList.contains('dark'));
-            });
-
-            // --- Filtering and Search ---
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkModeIcon = document.getElementById('darkModeIcon');
+            const darkModeText = document.getElementById('darkModeText');
             
-            function filterAndSearch() {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                let visibleCount = 0;
+            const sunIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12h2.25m.386-6.364l1.591 1.591M12 12a2.25 2.25 0 00-2.25 2.25v.003a.75.75 0 01-1.5 0v-.003A3.75 3.75 0 0112 8.25c2.071 0 3.75 1.679 3.75 3.75v.003a.75.75 0 01-1.5 0v-.003A2.25 2.25 0 0012 12z" />
+                </svg>`;
+            
+            const moonIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>`;
 
-                allBooks.forEach(bookItem => {
-                    const bookLink = bookItem.querySelector('.book-link');
-                    if (!bookLink) return;
-
-                    const title = bookLink.dataset.title.toLowerCase();
-                    const category = bookItem.dataset.category;
-
-                    const categoryMatch = (currentCategory === 'all' || category === currentCategory);
-                    const searchMatch = title.includes(searchTerm);
-
-                    if (categoryMatch && searchMatch) {
-                        bookItem.classList.remove('hidden');
-                        visibleCount++;
-                    } else {
-                        bookItem.classList.add('hidden');
-                    }
-                });
-                
-                // Show/hide "no results" message
-                if (visibleCount === 0) {
-                    noResults.classList.remove('hidden');
+            // --- Dark Mode Logic ---
+            const updateDarkMode = (isDark) => {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    darkModeIcon.innerHTML = sunIcon;
+                    darkModeText.textContent = 'Light Mode';
                 } else {
-                    noResults.classList.add('hidden');
+                    document.documentElement.classList.remove('dark');
+                    darkModeIcon.innerHTML = moonIcon;
+                    darkModeText.textContent = 'Dark Mode';
                 }
+            };
+
+            const toggleDarkMode = () => {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('darkMode', isDark);
+                updateDarkMode(isDark);
+            };
+
+            darkModeToggle.addEventListener('click', toggleDarkMode);
+
+            // Check for saved preference
+            const savedMode = localStorage.getItem('darkMode');
+            if (savedMode === 'true') {
+                updateDarkMode(true);
+            } else if (savedMode === 'false') {
+                updateDarkMode(false);
+            } else {
+                // Default to system preference if no saved mode
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                updateDarkMode(prefersDark);
             }
 
-            // Category tab listeners
-            categoryTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Update active tab style
-                    categoryTabs.forEach(t => {
-                        t.classList.remove('tab-active');
-                        t.classList.add('tab-inactive');
-                    });
-                    tab.classList.add('tab-active');
-                    tab.classList.remove('tab-inactive');
+            // --- Modal Logic ---
+            const openModal = (pdfLink, title) => {
+                modalTitle.textContent = title;
+                pdfIframe.src = pdfLink;
+                openNewTabBtn.href = pdfLink;
+                modal.classList.remove('hidden');
+                document.body.classList.add('modal-open');
+            };
 
-                    // Set current category and filter
-                    currentCategory = tab.dataset.category;
-                    filterAndSearch();
-                });
-            });
+            const closeModal = () => {
+                modal.classList.add('hidden');
+                pdfIframe.src = 'about:blank'; // Stop PDF from loading
+                document.body.classList.remove('modal-open');
+            };
 
-            // Search input listener
-            searchInput.addEventListener('input', () => {
-                if (searchInput.value.length > 0) {
-                    clearSearchBtn.classList.remove('hidden');
-                    clearSearchBtn.classList.add('flex');
-                } else {
-                    clearSearchBtn.classList.add('hidden');
-                    clearSearchBtn.classList.remove('flex');
-                }
-                filterAndSearch();
-            });
-
-            // Clear search button listener
-            clearSearchBtn.addEventListener('click', () => {
-                searchInput.value = '';
-                clearSearchBtn.classList.add('hidden');
-                clearSearchBtn.classList.remove('flex');
-                filterAndSearch();
-                searchInput.focus();
-            });
-
-            // --- PDF Modal ---
-
-            // Open modal
-            bookLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault(); // Stop default link behavior
+            booksGrid.addEventListener('click', (e) => {
+                const link = e.target.closest('.book-link');
+                if (link) {
+                    e.preventDefault();
                     const pdfLink = link.dataset.pdfLink;
                     const title = link.dataset.title;
-
-                    // Set modal content
-                    modalTitle.textContent = title;
-                    pdfIframe.src = pdfLink;
-                    openNewTabBtn.href = pdfLink;
-
-                    // Show modal
-                    modal.classList.remove('hidden');
-                    document.body.classList.add('modal-open');
-                });
+                    openModal(pdfLink, title);
+                }
             });
 
-            // Close modal
-            function closeModal() {
-                modal.classList.add('hidden');
-                document.body.classList.remove('modal-open');
-                pdfIframe.src = 'about:blank'; // Stop PDF loading to save resources
-            }
-
             closeModalBtn.addEventListener('click', closeModal);
-
-            // Optional: Close modal on background click (only for wider screens)
+            // Close modal on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+            // Close modal on background click
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     closeModal();
                 }
             });
-            
-            // Close modal with Escape key
-            document.addEventListener('keydown', (e) => {
-                if (e.key === "Escape" && !modal.classList.contains('hidden')) {
-                    closeModal();
+
+            // --- Filtering and Search Logic ---
+            let currentCategory = 'all';
+            let currentSearchTerm = '';
+
+            const filterAndSearch = () => {
+                let visibleBooks = 0;
+                const searchTerm = currentSearchTerm.toLowerCase();
+
+                allBookItems.forEach(item => {
+                    const title = item.querySelector('h3').textContent.toLowerCase();
+                    const category = item.dataset.category;
+
+                    const matchesCategory = (currentCategory === 'all') || category === currentCategory;
+                    const matchesSearch = title.includes(searchTerm);
+
+                    if (matchesCategory && matchesSearch) {
+                        item.classList.remove('hidden');
+                        visibleBooks++;
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+                
+                // Update book count and no-results message
+                if (visibleBooks > 0) {
+                    bookCountEl.textContent = `Showing ${visibleBooks} of ${allBookItems.length} books`;
+                    noResultsEl.classList.add('hidden');
+                } else {
+                    bookCountEl.textContent = `Showing 0 of ${allBookItems.length} books`;
+                    noResultsEl.classList.remove('hidden');
+                }
+            };
+
+            // Search Input Event
+            searchInput.addEventListener('input', (e) => {
+                currentSearchTerm = e.target.value;
+                filterAndSearch();
+            });
+
+            // Category Tab Events
+            categoryTabs.addEventListener('click', (e) => {
+                const tab = e.target.closest('.category-tab');
+                if (tab) {
+                    allCategoryTabs.forEach(t => t.classList.remove('tab-active'));
+                    tab.classList.add('tab-active');
+                    currentCategory = tab.dataset.category;
+                    filterAndSearch();
                 }
             });
 
-        }); // End DOMContentLoaded
+            // Initial book count
+            filterAndSearch();
+        });
     </script>
 
 </body>
 </html>
+
+
